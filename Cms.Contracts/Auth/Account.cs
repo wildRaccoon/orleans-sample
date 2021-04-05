@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Cms.Contracts.Rights
+namespace Cms.Contracts.Auth
 {
     public class Account
     {
@@ -12,6 +12,8 @@ namespace Cms.Contracts.Rights
         public string PasswordHash { get; set; }
 
         public List<string> Groups { get; set; }
+
+        public int FailedRetries { get; set; }
 
         public bool IsLocked { get; set; }
 
