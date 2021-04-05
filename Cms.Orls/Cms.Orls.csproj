@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Cms.Contracts\Cms.Contracts.csproj" />
     <ProjectReference Include="..\Cms.Core\Cms.Core.csproj" />
   </ItemGroup>
 

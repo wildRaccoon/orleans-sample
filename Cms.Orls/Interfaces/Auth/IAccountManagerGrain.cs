@@ -1,13 +1,14 @@
 ﻿using Cms.Orls.Interfaces.Rights;
+using Orleans;
 using System.Threading.Tasks;
 
 namespace Cms.Orls.Interfaces.Auth
 {
-    public interface IAccountManagerGrain
+    public interface IAccountManagerGrain : IGrainWithStringKey
     {
         Task AddGroup(IGroupGrain group);
         Task UpdateLogin(string login);
-        Task UpdatePassowrd(string passwordHash);
+        Task UpdatePassword(string passwordHash);
         Task Unlock();
     }
 }
