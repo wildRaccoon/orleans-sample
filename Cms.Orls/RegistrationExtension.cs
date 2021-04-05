@@ -2,6 +2,8 @@
 using Cms.Orls.Core.Rights;
 using Orleans;
 using Orleans.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Cms.Orls.Core.Query.AccountQuery;
 
 namespace Cms.Orls
 {
@@ -9,13 +11,17 @@ namespace Cms.Orls
     {
         public static ISiloHostBuilder ConfigureCms(this ISiloHostBuilder builder)
         {
-            builder.ConfigureApplicationParts(parts =>
-                parts
-                .AddApplicationPart(typeof(AccountGrain).Assembly)
-                .AddApplicationPart(typeof(GroupGrain).Assembly)
-                .WithReferences());
-
-            return builder;
+            return builder.ConfigureServices(sc =>
+                {
+                    sc.AddTransient<IAccountQuery, AccountQueryHandler>();
+                })
+                .ConfigureApplicationParts(parts =>
+                    parts
+                    .AddApplicationPart(typeof(AccountGrain).Assembly)
+                    .AddApplicationPart(typeof(GroupGrain).Assembly)
+                    .AddApplicationPart(typeof(SessionGrain).Assembly)
+                    .AddApplicationPart(typeof(LoginGrain).Assembly)
+                    .WithReferences());
         }
     }
 }
