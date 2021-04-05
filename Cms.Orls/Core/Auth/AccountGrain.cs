@@ -18,12 +18,6 @@ namespace Cms.Orls.Core.Auth
             this.logger = logger;
         }
 
-        public async override Task OnDeactivateAsync()
-        {
-            await WriteStateAsync();
-            await base.OnDeactivateAsync();
-        }
-
         #region IAccountGrain
         public Task<bool> CheckPass(string passwordHash)
         {

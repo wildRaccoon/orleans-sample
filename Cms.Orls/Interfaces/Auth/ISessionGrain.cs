@@ -8,6 +8,6 @@ namespace Cms.Orls.Interfaces.Auth
     {
         Task<string> InitFor(IAccountGrain account);
         Task<bool> IsAllowed(UserRights requiredRights);
-        Task<bool> IsLive();
+        Task<bool> CheckSession(string token);
     }
 }
