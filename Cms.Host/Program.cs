@@ -18,13 +18,17 @@ namespace Cms.Host
                 {
                     siloBuilder
                         .UseLocalhostClustering()
+                        .UseDashboard(conf => {
+                            conf.Port = 8080;
+                            conf.HostSelf = true;
+                        })
                         .ConfigureCms()
                         .Configure<ClusterOptions>(opt =>
                         {
                             opt.ClusterId = "debug";
                             opt.ServiceId = "cms_app";
                         })
-                        .UseMongoDBClient("mongodb://localhost")
+                        .UseMongoDBClient("mongodb://admin:pass12345@localhost")
                         .AddMongoDBGrainStorage("Auth", config =>
                         {
                             config.DatabaseName = "CmsAuth";
