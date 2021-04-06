@@ -5,6 +5,7 @@ using Orleans.Hosting;
 using System.Threading.Tasks;
 using Cms.Orls;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Cms.Host
 {
@@ -31,6 +32,9 @@ namespace Cms.Host
                 })
                 .ConfigureLogging(logBuilder => {
                     logBuilder.AddConsole();
+                })
+                .ConfigureWebHostDefaults(webBuilder => {
+                    webBuilder.UseStartup<Startup>();
                 })
                 .Build();
 
