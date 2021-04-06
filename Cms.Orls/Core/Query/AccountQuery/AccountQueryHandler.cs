@@ -12,19 +12,21 @@ namespace Cms.Orls.Core.Query.AccountQuery
 
         public AccountQueryHandler(IDataService dataService)
         {
-            this.collection = dataService.GetCollection<Account>();
+            //this.collection = dataService.GetCollection<>();
         }
 
         public async Task<Account> ByLogin(string login)
         {
-            var cursor = await collection.FindAsync(a => a.Login == login);
-            
-            if (!cursor.Any())
-            {
-                return null;
-            }
+            //var cursor = await collection.FindAsync(a => a.Login == login);
 
-            return cursor.First();
+            //if (!cursor.Any())
+            //{
+            //    return null;
+            //}
+
+            //return cursor.First();
+
+            return null;
         }
     }
 }

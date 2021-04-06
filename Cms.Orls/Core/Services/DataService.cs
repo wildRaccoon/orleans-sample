@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Linq;
 
@@ -15,11 +16,11 @@ namespace Cms.Orls.Core.Services
             this.options = options.Value;
         }
 
-        public IMongoCollection<T> GetCollection<T>()
+        public IMongoCollection<BsonDocument> GetCollection<T>()
         {
             var name = typeof(T).Name.Split('.', '+').Last();
 
-            return client.GetDatabase(options.DataBase).GetCollection<T>(options.Prefix + name);
+            return client.GetDatabase(options.DataBase).GetCollection<BsonDocument>(options.Prefix + name);
         }
     }
 }

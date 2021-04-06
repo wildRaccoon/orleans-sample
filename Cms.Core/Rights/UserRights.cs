@@ -1,11 +1,15 @@
 ﻿namespace Cms.Core.Rights
 {
-    public struct UserRights
+    public class UserRights
     {
-        public ulong R1;
-        public ulong R2;
-        public ulong R3;
-        public ulong R4;
+        public ulong R1 { get; set; }
+        public ulong R2 { get; set; }
+        public ulong R3 { get; set; }
+        public ulong R4 { get; set; }
+
+        public UserRights()
+        { 
+        }
 
         public UserRights(ulong r1, ulong r2, ulong r3, ulong r4)
         {

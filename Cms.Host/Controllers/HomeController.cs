@@ -1,11 +1,9 @@
 ﻿using Cms.Core.Rights;
-using Cms.Orls.Core.Services;
 using Cms.Orls.Interfaces.Rights;
 using Microsoft.AspNetCore.Mvc;
 using Orleans;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using MongoDB.Driver;
+using Cms.Orls.Core.Query.GroupQuery;
 
 namespace Cms.Host.Controllers
 {
@@ -13,12 +11,12 @@ namespace Cms.Host.Controllers
     public class HomeController : Controller
     {
         IGrainFactory grainFactory;
-        IDataService dataService;
+        IGroupQuery groupQuery;
 
-        public HomeController(IGrainFactory grainFactory, IDataService dataService)
+        public HomeController(IGrainFactory grainFactory, IGroupQuery groupQuery)
         {
             this.grainFactory = grainFactory;
-            this.dataService = dataService;
+            this.groupQuery = groupQuery;
         }
 
         [HttpGet]
@@ -56,10 +54,8 @@ namespace Cms.Host.Controllers
         [Route("[controller]/GetGroups")]
         public async Task<IActionResult> GetGroups()
         {
-            var collection = dataService.GetCollection<Group>();
-            var itemsCursor = await collection.FindAsync(x => true);
-
-            return Json(itemsCursor.ToList());
+            var collection = await groupQuery.AllAsync();
+            return Json(collection);
         }
     }
 }

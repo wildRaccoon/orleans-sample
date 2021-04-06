@@ -9,6 +9,8 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 using Cms.Orls.Core.Services;
+using Cms.Orls.Core.Query.CmsSerializer;
+using Cms.Orls.Core.Query.GroupQuery;
 
 namespace Cms.Orls
 {
@@ -18,7 +20,10 @@ namespace Cms.Orls
         {
             return builder.ConfigureServices(sc =>
                 {
+                    sc.AddTransient<ICmsSerializer, CmsSerializerImp>();
+                    sc.AddTransient<IGroupQuery, GroupQueryHandler>();
                     sc.AddTransient<IAccountQuery, AccountQueryHandler>();
+
                     sc.Configure<CmsOptions>(config =>
                     {
                         config.DataBase = dbName;
