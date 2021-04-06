@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cms.Contracts", "Cms.Contra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cms.Orls", "Cms.Orls\Cms.Orls.csproj", "{5CA02E55-36A9-48C4-AE45-7F1260BFD907}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms.Host", "Cms.Host\Cms.Host.csproj", "{A8A4CC29-5CE6-4A24-97F6-A51E10E14EB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cms.Host", "Cms.Host\Cms.Host.csproj", "{A8A4CC29-5CE6-4A24-97F6-A51E10E14EB8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cms.Unittests", "Cms.Unittests\Cms.Unittests.csproj", "{082DB006-9D45-4855-9594-A175860FACCD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{A8A4CC29-5CE6-4A24-97F6-A51E10E14EB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8A4CC29-5CE6-4A24-97F6-A51E10E14EB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8A4CC29-5CE6-4A24-97F6-A51E10E14EB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{082DB006-9D45-4855-9594-A175860FACCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{082DB006-9D45-4855-9594-A175860FACCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{082DB006-9D45-4855-9594-A175860FACCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{082DB006-9D45-4855-9594-A175860FACCD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
