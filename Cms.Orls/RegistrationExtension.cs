@@ -9,7 +9,7 @@ namespace Cms.Orls
 {
     public static class RegistrationExtension
     {
-        public static ISiloHostBuilder ConfigureCms(this ISiloHostBuilder builder)
+        public static ISiloBuilder ConfigureCms(this ISiloBuilder builder)
         {
             return builder.ConfigureServices(sc =>
                 {
