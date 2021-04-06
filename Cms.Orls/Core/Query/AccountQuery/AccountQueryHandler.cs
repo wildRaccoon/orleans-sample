@@ -1,4 +1,5 @@
 ﻿using Cms.Contracts.Auth;
+using Cms.Orls.Core.Services;
 using MongoDB.Driver;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,9 +10,9 @@ namespace Cms.Orls.Core.Query.AccountQuery
     {
         private IMongoCollection<Account> collection;
 
-        public AccountQueryHandler(IMongoCollection<Account> collection)
+        public AccountQueryHandler(IDataService dataService)
         {
-            this.collection = collection;
+            this.collection = dataService.GetCollection<Account>();
         }
 
         public async Task<Account> ByLogin(string login)

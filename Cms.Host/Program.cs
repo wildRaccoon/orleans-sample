@@ -13,26 +13,39 @@ namespace Cms.Host
     {
         static async Task Main(string[] args)
         {
+            var connectionString = "mongodb://admin:pass12345@localhost";
+            var createShardKey = false;
+            var dbName = "CmsAuth";
+
             var host = new HostBuilder()
                 .UseOrleans(siloBuilder =>
                 {
-                    siloBuilder
-                        .UseLocalhostClustering()
+                    siloBuilder                        
                         .UseDashboard(conf => {
                             conf.Port = 8080;
                             conf.HostSelf = true;
                         })
-                        .ConfigureCms()
+                        .ConfigureCms(dbName)
                         .Configure<ClusterOptions>(opt =>
                         {
                             opt.ClusterId = "debug";
                             opt.ServiceId = "cms_app";
                         })
-                        .UseMongoDBClient("mongodb://admin:pass12345@localhost")
-                        .AddMongoDBGrainStorage("Auth", config =>
+                        .ConfigureEndpoints(siloPort: 11111, gatewayPort: 30000)
+                        .UseMongoDBClient(connectionString)
+                        .AddMongoDBGrainStorage("Cms", config =>
                         {
-                            config.DatabaseName = "CmsAuth";
-                        });
+                            config.DatabaseName = dbName;
+                        })
+                        .UseLocalhostClustering();
+                        //.UseMongoDBClustering(config => {
+                        //    config.DatabaseName = dbName;
+                        //    config.CreateShardKeyForCosmos = createShardKey;
+                        //})
+                        //.UseMongoDBReminders(config => {
+                        //    config.CreateShardKeyForCosmos = createShardKey;
+                        //    config.DatabaseName = dbName;
+                        //});
                 })
                 .ConfigureLogging(logBuilder => {
                     logBuilder.AddConsole();

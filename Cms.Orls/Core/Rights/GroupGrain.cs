@@ -13,7 +13,7 @@ namespace Cms.Orls.Core.Rights
         ILogger<GroupGrain> logger;
         IPersistentState<Group> persistent;
 
-        public GroupGrain(ILogger<GroupGrain> logger, [PersistentState("Cms.Contracts.Rights.Group", "Auth")] IPersistentState<Group> persistent)
+        public GroupGrain(ILogger<GroupGrain> logger, [PersistentState("Cms.Contracts.Rights.Group", "Cms")] IPersistentState<Group> persistent)
         {
             this.logger = logger;
             this.persistent = persistent;
