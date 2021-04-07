@@ -24,13 +24,15 @@ namespace Cms.Orls.Core.Query.AccountQuery
         {
             var collection = service.GetCollection<Account>();
             var cursor = await collection.FindAsync(Builders<BsonDocument>.Filter.Eq("_doc.Login", login));
-            
-            if (!cursor.Any())
+
+            var accountBson = cursor.FirstOrDefault();
+
+            if (accountBson == null)
             {
                 return null;
             }
 
-            return serializer.Deserialize<Account>(cursor.First().ToJToken());
+            return serializer.Deserialize<Account>(accountBson.ToJToken());
         }
     }
 }

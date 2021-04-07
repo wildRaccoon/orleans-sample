@@ -2,59 +2,70 @@
 using Cms.Core.Rights;
 using Cms.Orls.Interfaces.Auth;
 using Orleans;
+using Orleans.Runtime;
 using System;
 using System.Threading.Tasks;
 
 namespace Cms.Orls.Core.Auth
 {
-    public class SessionGrain : Grain<Session>, ISessionGrain
+    public class SessionGrain : Grain, ISessionGrain
     {
         IGrainFactory factory;
         IAccountGrain account;
+        IPersistentState<Session> persistent;
 
-        public SessionGrain(IGrainFactory factory)
+        public SessionGrain(IGrainFactory factory, [PersistentState("Cms.Contracts.Auth.Session", "Cms")] IPersistentState<Session> persistent)
         {
             this.factory = factory;
+            this.persistent = persistent;
         }
 
         public override Task OnActivateAsync()
         {
-            if (!string.IsNullOrEmpty(State.AccountId))
+            account = factory.GetGrain<IAccountGrain>(this.GetPrimaryKeyString());
+
+            if (!persistent.RecordExists)
             {
-                account = factory.GetGrain<IAccountGrain>(State.AccountId);
+                persistent.State.AccountId = this.GetPrimaryKeyString();
+                //
+                //persistent.State.Rights = UserRights.MinValue;
+                persistent.State.Token = string.Empty;
             }
+
             return base.OnActivateAsync();
         }
 
         #region ISessionGrain
         public async Task<bool> CheckSession(string token)
         {
-            State.Expired = State.LastAccess <= DateTime.Now.AddMinutes(2);
+            persistent.State.Expired = persistent.State.LastAccess <= DateTime.Now.AddMinutes(-2);
 
-            if (State.Expired)
+            if (persistent.State.Expired)
             {
                 return false;
             }
 
-            State.LastAccess = DateTime.Now;
-            var tokenValid = State.Token == token;
+            persistent.State.LastAccess = DateTime.Now;
+            var tokenValid = persistent.State.Token == token;
             var isLocked = await account.IsLocked();
 
             return tokenValid && !isLocked;
         }
 
-        public async Task<string> InitFor(IAccountGrain account)
-        {
-            this.account = account;
-            State.LastAccess = DateTime.Now;
-            State.Rights = await account.GetRights();
-            State.AccountId = await account.GetId();
-            State.Expired = false;
-            State.Token = Guid.NewGuid().ToString("N");
+        public async Task<string> Init()
+        {            
+            persistent.State.LastAccess = DateTime.Now;
+            //persistent.State.Rights = await account.GetRights();
+            persistent.State.AccountId = await account.GetId();
+            persistent.State.Expired = false;
+            var token = persistent.State.Token = Guid.NewGuid().ToString("N");
 
-            await WriteStateAsync();
+            await persistent.WriteStateAsync();
 
-            return State.Token;
+            var checkSessionGrain = factory.GetGrain<ICheckSessionGrain>(token);
+            await checkSessionGrain.For(this);
+
+            return token;
         }
 
         public async Task<bool> IsAllowed(UserRights requiredRights)

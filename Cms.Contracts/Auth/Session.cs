@@ -7,7 +7,7 @@ namespace Cms.Contracts.Auth
     {
         public string Token { get; set; }
         public string AccountId { get; set; }
-        public UserRights Rights { get; set; }
+        //public UserRights Rights { get; set; } = UserRights.MinValue;
         public DateTime LastAccess { get; set; }
         public bool Expired { get; set; }
     }

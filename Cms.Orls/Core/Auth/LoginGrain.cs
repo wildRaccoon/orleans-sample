@@ -22,19 +22,20 @@ namespace Cms.Orls.Core.Auth
         public override async Task OnActivateAsync()
         {
             login = this.GetPrimaryKeyString();
-            var data = await accountQuery.ByLogin(login);
-
-            if (data != null)
-            {
-                account = factory.GetGrain<IAccountGrain>(data.Id);
-            }
-
             await base.OnActivateAsync();
         }
 
         #region ILogin
         public async Task<string> PerformLogin(string password)
         {
+            var data = await accountQuery.ByLogin(login);
+
+            if (data == null)
+            {
+                throw new Exception($"Unable to login account {login}");
+            }
+
+            account = factory.GetGrain<IAccountGrain>(data.Id);
             var validPassoword = await Validate(password);
             if (!validPassoword)
             {
@@ -60,19 +61,18 @@ namespace Cms.Orls.Core.Auth
         private async Task<string> GetToken()
         {
             var accId = await account.GetId();
-            
             var session = factory.GetGrain<ISessionGrain>(accId);
-            return await session.InitFor(account);
+            return await session.Init();
         }
 
-        private Task<bool> Validate(string pass)
+        private async Task<bool> Validate(string pass)
         {
-            if (account == null || account.IsLocked().Result)
+            if (account == null || await account.IsLocked())
             {
-                return Task.FromResult(false);
+                return false;
             }
 
-            return account.CheckPass(pass);
+            return await account.CheckPass(pass);
         }
     }
 }

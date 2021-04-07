@@ -40,10 +40,10 @@ namespace Cms.Orls.Core.Rights
             return Task.FromResult(persistent.State.Name);
         }
 
-        public Task<UserRights> GetRights()
-        {
-            return Task.FromResult(persistent.State.Rights);
-        }
+        //public Task<UserRights> GetRights()
+        //{
+        //    return Task.FromResult(persistent.State.Rights);
+        //}
         #endregion
 
         #region IGroupManagerGrain
@@ -54,12 +54,12 @@ namespace Cms.Orls.Core.Rights
             return persistent.WriteStateAsync();
         }
 
-        public Task UpdateRights(UserRights rights)
-        {
-            logger.LogInformation($"Group:{persistent.State.Id} changed rights.");
-            persistent.State.Rights = rights;
-            return persistent.WriteStateAsync();
-        }  
+        //public Task UpdateRights(UserRights rights)
+        //{
+        //    logger.LogInformation($"Group:{persistent.State.Id} changed rights.");
+        //    persistent.State.Rights = rights;
+        //    return persistent.WriteStateAsync();
+        //}  
         #endregion
     }
 }

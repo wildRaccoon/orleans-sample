@@ -6,7 +6,7 @@ namespace Cms.Orls.Interfaces.Auth
 {
     public interface ISessionGrain : IGrainWithStringKey
     {
-        Task<string> InitFor(IAccountGrain account);
+        Task<string> Init();
         Task<bool> IsAllowed(UserRights requiredRights);
         Task<bool> CheckSession(string token);
     }

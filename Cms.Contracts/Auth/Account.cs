@@ -11,7 +11,7 @@ namespace Cms.Contracts.Auth
 
         public string PasswordHash { get; set; }
 
-        public List<string> Groups { get; set; }
+        //public List<string> Groups { get; set; }
 
         public int FailedRetries { get; set; }
 

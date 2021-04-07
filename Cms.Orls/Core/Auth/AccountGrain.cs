@@ -3,42 +3,58 @@ using Cms.Core.Rights;
 using Cms.Orls.Interfaces.Auth;
 using Cms.Orls.Interfaces.Rights;
 using Orleans;
+using Orleans.Runtime;
 using System;
 using System.Threading.Tasks;
 
 namespace Cms.Orls.Core.Auth
 {
-    public class AccountGrain : Grain<Account>, IAccountGrain, IAccountManagerGrain
+    public class AccountGrain : Grain, IAccountGrain, IAccountManagerGrain
     {
-        public AccountGrain()
+
+        IPersistentState<Account> persistent;
+        public AccountGrain([PersistentState("Cms.Contracts.Auth.Account", "Cms")] IPersistentState<Account> persistent)
         {
+            this.persistent = persistent;
+        }
+
+        public override async Task OnActivateAsync()
+        {
+            if (!persistent.RecordExists)
+            {
+                persistent.State.Id = this.GetPrimaryKeyString();
+                persistent.State.LastSuccessLogin = DateTime.MinValue;
+                persistent.State.IsLocked = false;
+                persistent.State.PasswordHash = string.Empty;
+                persistent.State.FailedRetries = 0;
+            }
+
+            await base.OnActivateAsync();
         }
 
         #region IAccountGrain
         public Task<bool> CheckPass(string passwordHash)
         {
-            var check = State.PasswordHash == passwordHash;
-
-            if (State.PasswordHash == passwordHash)
+            if (persistent.State.PasswordHash == passwordHash)
             {
-                State.LastSuccessLogin = DateTime.Now;
+                persistent.State.LastSuccessLogin = DateTime.Now;
                 return Task.FromResult(true);
             }
 
-            State.FailedRetries++;
-            State.IsLocked = State.FailedRetries > 3;
+            persistent.State.FailedRetries++;
+            persistent.State.IsLocked = persistent.State.FailedRetries > 3;
 
             return Task.FromResult(false);
         }
 
         public Task<string> GetId()
         {
-            return Task.FromResult(State.Id);
+            return Task.FromResult(persistent.State.Id);
         }
 
         public Task<string> GetLogin()
         {
-            return Task.FromResult(State.Login);
+            return Task.FromResult(persistent.State.Login);
         }
 
         public Task<UserRights> GetRights()
@@ -49,7 +65,7 @@ namespace Cms.Orls.Core.Auth
 
         public Task<bool> IsLocked()
         {
-            return Task.FromResult(State.IsLocked);
+            return Task.FromResult(persistent.State.IsLocked);
         }
         #endregion
 
@@ -62,31 +78,31 @@ namespace Cms.Orls.Core.Auth
 
         public Task Unlock()
         {
-            State.IsLocked = false;
-            State.FailedRetries = 0;
-            return WriteStateAsync();
+            persistent.State.IsLocked = false;
+            persistent.State.FailedRetries = 0;
+            return persistent.WriteStateAsync();
         }
 
         public Task UpdateLogin(string login)
         {
-            if (login == State.Login)
+            if (login == persistent.State.Login)
             {
                 return Task.CompletedTask;
             }
 
-            State.Login = login;
-            return WriteStateAsync();
+            persistent.State.Login = login;
+            return persistent.WriteStateAsync();
         }
          
         public Task UpdatePassword(string passwordHash)
         {
-            if (passwordHash == State.PasswordHash)
+            if (passwordHash == persistent.State.PasswordHash)
             {
                 return Task.CompletedTask;
             }
 
-            State.PasswordHash = passwordHash;
-            return WriteStateAsync();
+            persistent.State.PasswordHash = passwordHash;
+            return persistent.WriteStateAsync();
         }
         #endregion
     }

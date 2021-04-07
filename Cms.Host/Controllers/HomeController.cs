@@ -69,7 +69,6 @@ namespace Cms.Host.Controllers
 
         public class GetGroupByIdRequest
         {
-            public string Login { get; set; }
             public string Token { get; set; }
             public string GroupId { get; set; }
         }
@@ -83,8 +82,8 @@ namespace Cms.Host.Controllers
                 return BadRequest();
             }
 
-            var sessionGrain = grainFactory.GetGrain<ISessionGrain>(request.Login);
-            var isValidToken = await sessionGrain.CheckSession(request.Token);
+            var sessionGrain = grainFactory.GetGrain<ICheckSessionGrain>(request.Token);
+            var isValidToken = await sessionGrain.IsValid();
             if (!isValidToken)
             {
                 return BadRequest();
@@ -95,17 +94,15 @@ namespace Cms.Host.Controllers
             var data = new
             {
                 id = await groupItem.GetId(),
-                name = await groupItem.GetName(),
-                rights = (await groupItem.GetRights()).ToString()
+                name = await groupItem.GetName()
+                //rights = (await groupItem.GetRights()).ToString()
             };
 
             return Json(data);
         }
 
         public class CreateGroupRequest
-        {
-            public string Login { get; set; }
-            public string Token { get; set; }
+        {   public string Token { get; set; }
             public string GroupName { get; set; }
         }
 
@@ -118,8 +115,8 @@ namespace Cms.Host.Controllers
                 return BadRequest();
             }
 
-            var sessionGrain = grainFactory.GetGrain<ISessionGrain>(request.Login);
-            var isValidToken = await sessionGrain.CheckSession(request.Token);
+            var sessionGrain = grainFactory.GetGrain<ICheckSessionGrain>(request.Token);
+            var isValidToken = await sessionGrain.IsValid();
             if (!isValidToken)
             {
                 return BadRequest();
@@ -129,7 +126,7 @@ namespace Cms.Host.Controllers
 
             var groupManageItem = grainFactory.GetGrain<IGroupManagerGrain>(newGroupId);
             await groupManageItem.UpdateName(request.GroupName);
-            await groupManageItem.UpdateRights(UserRights.MinValue);
+            //await groupManageItem.UpdateRights(UserRights.MinValue);
 
             var groupItem = grainFactory.GetGrain<IGroupGrain>(newGroupId);
 

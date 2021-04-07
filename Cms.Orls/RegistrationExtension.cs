@@ -36,6 +36,7 @@ namespace Cms.Orls
                     .AddApplicationPart(typeof(GroupGrain).Assembly)
                     .AddApplicationPart(typeof(SessionGrain).Assembly)
                     .AddApplicationPart(typeof(LoginGrain).Assembly)
+                    .AddApplicationPart(typeof(CheckSessionGrain).Assembly)
                     .WithReferences());
         }
     }

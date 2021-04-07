@@ -6,6 +6,6 @@ namespace Cms.Contracts.Rights
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public UserRights Rights { get; set; }
+        //public UserRights Rights { get; set; }
     }
 }

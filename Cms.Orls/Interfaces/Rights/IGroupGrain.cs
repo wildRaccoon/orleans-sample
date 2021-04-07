@@ -7,7 +7,7 @@ namespace Cms.Orls.Interfaces.Rights
     public interface IGroupGrain : IGrainWithStringKey
     {
         Task<string> GetId();
-        Task<UserRights> GetRights();
+        //Task<UserRights> GetRights();
         Task<string> GetName();
     }
 }

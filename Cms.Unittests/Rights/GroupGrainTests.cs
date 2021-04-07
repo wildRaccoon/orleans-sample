@@ -20,7 +20,7 @@ namespace Cms.Unittests.Rights
             var group = await Silo.CreateGrainAsync<GroupGrain>("gid");
 
             await group.UpdateName("name");
-            await group.UpdateRights(UserRights.MaxValue);
+            //await group.UpdateRights(UserRights.MaxValue);
 
             var id = await group.GetId();
             id.Should().Equals("gid");
@@ -28,8 +28,8 @@ namespace Cms.Unittests.Rights
             var name = await group.GetName();
             name.Should().Equals("name");
 
-            var rights = await group.GetRights();
-            rights.Should().Equals(UserRights.MaxValue);
+            //var rights = await group.GetRights();
+            //rights.Should().Equals(UserRights.MaxValue);
         }
 
         [Fact]
@@ -38,8 +38,8 @@ namespace Cms.Unittests.Rights
             var groupState = new Group()
             { 
                 Id = "gid",
-                Name = "old name",
-                Rights = UserRights.MinValue
+                Name = "old name"                
+                //Rights = UserRights.MinValue
             };
 
             Silo.SetupState<Group>(groupState, true);
@@ -55,8 +55,8 @@ namespace Cms.Unittests.Rights
             var name = await group.GetName();
             name.Should().Equals("new name");
 
-            var rights = await group.GetRights();
-            rights.Should().Equals(UserRights.MaxValue);
+            //var rights = await group.GetRights();
+            //rights.Should().Equals(UserRights.MaxValue);
         }
 
     }
