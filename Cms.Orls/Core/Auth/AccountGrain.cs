@@ -2,7 +2,6 @@
 using Cms.Core.Rights;
 using Cms.Orls.Interfaces.Auth;
 using Cms.Orls.Interfaces.Rights;
-using Microsoft.Extensions.Logging;
 using Orleans;
 using System;
 using System.Threading.Tasks;
@@ -11,11 +10,8 @@ namespace Cms.Orls.Core.Auth
 {
     public class AccountGrain : Grain<Account>, IAccountGrain, IAccountManagerGrain
     {
-        private ILogger<AccountGrain> logger;
-
-        public AccountGrain(ILogger<AccountGrain> logger)
+        public AccountGrain()
         {
-            this.logger = logger;
         }
 
         #region IAccountGrain

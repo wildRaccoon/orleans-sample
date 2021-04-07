@@ -1,15 +1,17 @@
 ﻿using Cms.Orls.Core.Query.AccountQuery;
 using Cms.Orls.Interfaces.Auth;
 using Orleans;
+using System;
 using System.Threading.Tasks;
 
 namespace Cms.Orls.Core.Auth
 {
-    public class LoginGrain : Grain, ILogin
+    public class LoginGrain : Grain, ILoginGrain
     {
         private IAccountQuery accountQuery;
         private IGrainFactory factory;
         private IAccountGrain account;
+        private string login;
 
         public LoginGrain(IAccountQuery accountQuery, IGrainFactory factory)
         {
@@ -19,7 +21,7 @@ namespace Cms.Orls.Core.Auth
 
         public override async Task OnActivateAsync()
         {
-            var login = this.GetPrimaryKeyString();
+            login = this.GetPrimaryKeyString();
             var data = await accountQuery.ByLogin(login);
 
             if (data != null)
@@ -30,8 +32,32 @@ namespace Cms.Orls.Core.Auth
             await base.OnActivateAsync();
         }
 
-        #region MyRegion
-        public async Task<string> GetToken()
+        #region ILogin
+        public async Task<string> PerformLogin(string password)
+        {
+            var validPassoword = await Validate(password);
+            if (!validPassoword)
+            {
+                throw new Exception($"Unable to login account {login}");
+            }
+
+            return await GetToken();
+        }
+
+        public async Task<bool> CheckToken(string token)
+        {
+            if (account == null || account.IsLocked().Result)
+            {
+                return false;
+            }
+
+            var accId = await account.GetId();
+            var session = factory.GetGrain<ISessionGrain>(accId);
+            return await session.CheckSession(token);
+        } 
+        #endregion
+
+        private async Task<string> GetToken()
         {
             var accId = await account.GetId();
             
@@ -39,7 +65,7 @@ namespace Cms.Orls.Core.Auth
             return await session.InitFor(account);
         }
 
-        public Task<bool> Validate(string pass)
+        private Task<bool> Validate(string pass)
         {
             if (account == null || account.IsLocked().Result)
             {
@@ -47,7 +73,6 @@ namespace Cms.Orls.Core.Auth
             }
 
             return account.CheckPass(pass);
-        } 
-        #endregion
+        }
     }
 }

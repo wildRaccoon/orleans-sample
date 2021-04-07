@@ -32,10 +32,10 @@ namespace Cms.Orls
                 })
                 .ConfigureApplicationParts(parts =>
                     parts
-                    //.AddApplicationPart(typeof(AccountGrain).Assembly)
+                    .AddApplicationPart(typeof(AccountGrain).Assembly)
                     .AddApplicationPart(typeof(GroupGrain).Assembly)
-                    //.AddApplicationPart(typeof(SessionGrain).Assembly)
-                    //.AddApplicationPart(typeof(LoginGrain).Assembly)
+                    .AddApplicationPart(typeof(SessionGrain).Assembly)
+                    .AddApplicationPart(typeof(LoginGrain).Assembly)
                     .WithReferences());
         }
     }

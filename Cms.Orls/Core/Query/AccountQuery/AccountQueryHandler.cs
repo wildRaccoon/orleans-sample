@@ -1,6 +1,9 @@
 ﻿using Cms.Contracts.Auth;
+using Cms.Orls.Core.Query.CmsSerializer;
 using Cms.Orls.Core.Services;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using Orleans.Providers.MongoDB.StorageProviders;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,25 +11,26 @@ namespace Cms.Orls.Core.Query.AccountQuery
 {
     public class AccountQueryHandler : IAccountQuery
     {
-        private IMongoCollection<Account> collection;
+        IDataService service;
+        ICmsSerializer serializer;
 
-        public AccountQueryHandler(IDataService dataService)
+        public AccountQueryHandler(IDataService service, ICmsSerializer serializer)
         {
-            //this.collection = dataService.GetCollection<>();
+            this.service = service;
+            this.serializer = serializer;
         }
 
         public async Task<Account> ByLogin(string login)
         {
-            //var cursor = await collection.FindAsync(a => a.Login == login);
+            var collection = service.GetCollection<Account>();
+            var cursor = await collection.FindAsync(Builders<BsonDocument>.Filter.Eq("_doc.Login", login));
+            
+            if (!cursor.Any())
+            {
+                return null;
+            }
 
-            //if (!cursor.Any())
-            //{
-            //    return null;
-            //}
-
-            //return cursor.First();
-
-            return null;
+            return serializer.Deserialize<Account>(cursor.First().ToJToken());
         }
     }
 }
