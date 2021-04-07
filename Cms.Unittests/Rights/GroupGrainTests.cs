@@ -47,7 +47,7 @@ namespace Cms.Unittests.Rights
             var group = await Silo.CreateGrainAsync<GroupGrain>("gid");
 
             await group.UpdateName("new name");
-            await group.UpdateRights(UserRights.MaxValue);
+            //await group.UpdateRights(UserRights.MaxValue);
 
             var id = await group.GetId();
             id.Should().Equals("gid");
