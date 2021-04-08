@@ -31,8 +31,7 @@ namespace Cms.Host
                         {
                             opt.ClusterId = hostConfig.ClusterId;
                             opt.ServiceId = hostConfig.ServiceId;
-                        })
-                        .ConfigureEndpoints(siloPort: 11111, gatewayPort: 30000)
+                        })                        
                         .UseMongoDBClient(hostConfig.MongoDb.ConnectionString)
                         .AddMongoDBGrainStorage("Cms", config =>
                         {
@@ -46,6 +45,7 @@ namespace Cms.Host
                     else
                     {
                         siloBuilder
+                            .ConfigureEndpoints(siloPort: 11111, gatewayPort: 30000)
                             .UseMongoDBClustering(config =>
                             {
                                 config.DatabaseName = hostConfig.MongoDb.ClusteringDatabase;

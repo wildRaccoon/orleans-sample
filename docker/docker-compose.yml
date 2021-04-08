@@ -10,7 +10,6 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=pass12345
   mongo-express:
     image: mongo-express
-    restart: always
     environment:
       - ME_CONFIG_MONGODB_SERVER=mongodb
       - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
