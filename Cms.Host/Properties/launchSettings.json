@@ -17,6 +17,7 @@
     },
     "Cms.Host": {
       "commandName": "Project",
+      "commandLineArgs": "test",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
